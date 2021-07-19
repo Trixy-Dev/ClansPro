@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -1101,51 +1102,36 @@ public class DefaultClan implements Clan {
 		return Objects.hash(getClanID());
 	}
 
-	private ClanBank getBank() {
+	private Optional<ClanBank> getBank() {
 		if (!Bukkit.getPluginManager().isPluginEnabled("Vault") && !Bukkit.getPluginManager().isPluginEnabled("Enterprise")) {
-			return null;
+			return Optional.empty();
 		}
-		return API.defaultImpl.getBank(this);
+		return Optional.ofNullable(API.defaultImpl.getBank(this));
 	}
 
 	@Override
 	public boolean deposit(Player player, BigDecimal amount) {
-		if (!Bukkit.getPluginManager().isPluginEnabled("Vault") && !Bukkit.getPluginManager().isPluginEnabled("Enterprise")) {
-			return false;
-		}
-		return Objects.requireNonNull(getBank()).deposit(player, amount);
+		return getBank().map(bank -> deposit(player, amount)).orElse(false);
 	}
 
 	@Override
 	public boolean withdraw(Player player, BigDecimal amount) {
-		if (!Bukkit.getPluginManager().isPluginEnabled("Vault") && !Bukkit.getPluginManager().isPluginEnabled("Enterprise")) {
-			return false;
-		}
-		return Objects.requireNonNull(getBank()).withdraw(player, amount);
+		return getBank().map(bank -> withdraw(player, amount)).orElse(false);
 	}
 
 	@Override
 	public boolean has(BigDecimal amount) {
-		if (!Bukkit.getPluginManager().isPluginEnabled("Vault") && !Bukkit.getPluginManager().isPluginEnabled("Enterprise")) {
-			return false;
-		}
-		return Objects.requireNonNull(getBank()).has(amount);
+		return getBank().map(bank -> has(amount)).orElse(false);
 	}
 
 	@Override
 	public BigDecimal getBalance() {
-		if (!Bukkit.getPluginManager().isPluginEnabled("Vault") && !Bukkit.getPluginManager().isPluginEnabled("Enterprise")) {
-			return null;
-		}
-		return Objects.requireNonNull(getBank()).getBalance();
+		return getBank().map(ClanBank::getBalance).orElse(null);
 	}
 
 	@Override
 	public boolean setBalance(BigDecimal newBalance) {
-		if (!Bukkit.getPluginManager().isPluginEnabled("Vault") && !Bukkit.getPluginManager().isPluginEnabled("Enterprise")) {
-			return false;
-		}
-		return Objects.requireNonNull(getBank()).setBalance(newBalance);
+		return getBank().map(bank -> setBalance(newBalance)).orElse(false);
 	}
 
 	public @NotNull List<Clan> getWarInvites() {
