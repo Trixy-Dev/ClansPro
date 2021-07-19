@@ -108,12 +108,6 @@
         </dependency>
         <dependency>
             <groupId>com.github.the-h-team</groupId>
-            <artifactId>Labyrinth</artifactId>
-            <version>1.6.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.the-h-team</groupId>
             <artifactId>Enterprise</artifactId>
             <version>1.5</version>
             <scope>provided</scope>
@@ -142,6 +136,35 @@
             <artifactId>bungeecord-api</artifactId>
             <version>1.16-R0.4</version>
             <type>javadoc</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.the-h-team</groupId>
+            <artifactId>labyrinth-common</artifactId>
+            <version>1.7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.the-h-team</groupId>
+            <artifactId>labyrinth-gui</artifactId>
+            <version>1.7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.the-h-team</groupId>
+            <artifactId>labyrinth-skull</artifactId>
+            <version>1.7.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
