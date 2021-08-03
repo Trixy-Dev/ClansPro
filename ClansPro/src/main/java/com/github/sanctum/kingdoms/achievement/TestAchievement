@@ -1,1 +1,143 @@
 
+// Make our objective.
+		KingdomAchievement apples = KingdomAchievement.newInstance("Apple Hunter", "Pick 50 apples.", 0.0, 50.0);
+
+		// Subscribe to the clan event bus, test event claim interaction for apple picking.
+		ClanVentBus.subscribe(ClaimInteractEvent.class, Vent.Priority.HIGH, ClansPro.getInstance(), (e, subscription) -> {
+
+			EventCycle cycle = CycleList.getAddon("Kingdoms");
+
+			Player pl = e.getPlayer();
+
+			// Simple contingency to prevent an out of context subscription. Remove if kingdoms is disabled.
+			if (!cycle.isActive()) {
+				subscription.remove();
+				return;
+			}
+
+			if (e.getInteraction() == InteractionType.BREAK) {
+
+				// Check if our test user is a member of the claims clan.
+				if (e.getClaim().getClan().getPlayers().exists(p -> p.getName().equals("Username"))) {
+
+					// We are, use the clan.
+
+					Clan c = e.getClaim().getClan();
+
+					String name = c.getValue(String.class, "kingdom");
+
+					if (name != null) {
+
+						Kingdom k = Kingdom.getKingdom(name);
+
+						// Are they mining tree leaves?
+						if (e.getBlock().getType() == Material.ACACIA_LEAVES) {
+
+							KingdomAchievement achievement = k.getAchievement("Apple Hunter");
+
+							if (achievement == null) {
+
+								k.loadAchievement(apples);
+								return;
+							}
+
+
+							if (achievement.activated(pl)) {
+
+								if (!achievement.isComplete()) {
+
+									// They "picked" 1 apple so lets progress them by 1 percent.
+
+									achievement.progress(1.0);
+
+								} else {
+
+									cycle.getMessenger().assignPlayer(pl).send("&aObjective &eApples &acompleted.");
+
+									achievement.deactivate(pl);
+
+								}
+
+							} else {
+
+								// decide how you want to activate the objective for a given player. We can do it here or by command.
+
+							}
+
+						}
+
+					} else {
+
+						// the clan has no relation to a kingdom.
+
+					}
+
+
+				} else {
+
+					ClansAPI api = ClansAPI.getInstance();
+
+					Clan c = api.getClan(e.getPlayer()).orElse(null);
+
+					if (c != null) {
+
+						String name = c.getValue(String.class, "kingdom");
+
+						if (name != null) {
+
+							Kingdom k = Kingdom.getKingdom(name);
+
+							// Are they mining tree leaves?
+							if (e.getBlock().getType() == Material.ACACIA_LEAVES) {
+
+								KingdomAchievement achievement = k.getAchievement("Apple Hunter");
+
+								if (achievement == null) {
+
+									k.loadAchievement(apples);
+									return;
+								}
+
+
+								if (achievement.activated(pl)) {
+
+									if (!achievement.isComplete()) {
+
+										// They "picked" 1 apple so lets progress them by 1 percent.
+
+										achievement.progress(1.0);
+
+									} else {
+
+										cycle.getMessenger().assignPlayer(pl).send("&aObjective &eApples &acompleted.");
+
+										achievement.deactivate(pl);
+
+									}
+
+								} else {
+
+									// decide how you want to activate the objective for a given player. We can do it here or by command.
+
+								}
+
+							}
+
+						} else {
+
+							// the clan has no relation to a kingdom.
+
+						}
+
+					} else {
+
+						// were not in a clan. No progression.
+
+					}
+
+				}
+
+			}
+
+
+		});
